@@ -1,0 +1,22 @@
+{
+    "name": "atlasrw/wails",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "atlasrw",
+            "email": "atlasrw@icloud.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Wails\\Core\\": "src/",
+            "Wails\\Core\\Interfaces\\": "src/interfaces/",
+            "Wails\\DB\\": "database/",
+            "Wails\\Controllers\\": "controllers/",
+            "Wails\\Models\\": "models/",
+            "Wails\\Views\\": "views/"
+        }
+    }
+}

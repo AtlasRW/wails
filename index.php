@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MVC Framework</title>
 </head>
+<?
+
+    require_once 'vendor/autoload.php';
+
+?>
 <body>
-    <p>SERVER : <? var_dump($_SERVER['REQUEST_URI']) ?></p>
+
+
+
 </body>
 </html>
