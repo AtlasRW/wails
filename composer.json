@@ -11,8 +11,11 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "Wails\\Core\\": "src/",
-            "Wails\\Core\\Interfaces\\": "src/interfaces/",
+            "Wails\\Core\\": [
+                "src/",
+                "src/config/",
+                "src/interfaces/"
+            ],
             "Wails\\Entities\\": "entities/",
             "Wails\\Models\\": "models/",
             "Wails\\Views\\": "views/",

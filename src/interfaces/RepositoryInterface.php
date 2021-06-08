@@ -1,6 +1,6 @@
 <?
 
-namespace Wails\Core\Interfaces;
+namespace Wails\Core;
 
 interface RepositoryInterface
 {
