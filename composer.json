@@ -13,7 +13,7 @@
         "psr-4": {
             "Wails\\Core\\": "src/",
             "Wails\\Core\\Interfaces\\": "src/interfaces/",
-            "Wails\\DB\\": "database/",
+            "Wails\\Entities\\": "entities/",
             "Wails\\Models\\": "models/",
             "Wails\\Views\\": "views/",
             "Wails\\Controllers\\": "controllers/"

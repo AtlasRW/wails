@@ -13,16 +13,20 @@ abstract class DAO implements CRUDInterface, RepositoryInterface
     public function __construct()
     {
 
-        $db = json_decode(file_get_contents(__DIR__."/db.json"), true);
-        $driver = $db['driver'];
-        $name = $db['name'];
-        $host = $db['host'];
-        $port = $db['port'];
-        $user = $db['user'];
-        $pass = $db['pass'];
+        $config = $this->config();
+        $this->pdo = new PDO(
+            "{$config->driver}:dbname={$config->name};host={$config->host}:{$config->port}",
+            "{$config->user}",
+            "{$config->pass}"
+        );
 
-        $this->pdo = new PDO("${driver}:dbname=${name};host=${host}:${port}", "${user}", "${pass}");
+    }
 
+    private function config() : object
+    {
+        
+        return json_decode(file_get_contents(__DIR__."/config/database.json"));
+    
     }
 
     public function create(array $args) : object {}
