@@ -5,19 +5,11 @@ namespace Wails\Core;
 class Config
 {
 
-    public static function get(string $filename) : mixed
+    public static function get(string $filename, bool $assoc = false) : mixed
     {
         
-        return Utils::unserialize(__DIR__."/${filename}.json");
+        return Utils::unserialize(__DIR__."/${filename}.json", $assoc);
     
     }
-
-    public static function set(string $filename, mixed $value) : int
-    {
-    
-        return Utils::serialize(__DIR__."/${filename}.json", $value);
-    
-    }
-
 
 }
