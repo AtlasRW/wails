@@ -3,43 +3,111 @@
 namespace Wails\Core;
 use ReflectionMethod;
 
-class Routing
+final class Routing
 {
 
-    private array $config;
-    private string $http;
-    private string $uri;
+    private array $routes;
+    private array $request;
 
     public function __construct()
     {
 
-        $this->config = Config::get("routing", true);
-        $this->http = $_SERVER['REQUEST_METHOD']; $this->uri = $_SERVER['REQUEST_URI'];
-        ($this->check()) ? $this->execute() : Controller::error('Syntax Error : config.json');
+        $this->routes = Config::get('routes', true);
+        $this->request = array(
+            'HTTP' => $_SERVER['REQUEST_METHOD'],
+            'URI' => self::sanitize($_SERVER['REQUEST_URI'])
+        );
+        (Config::is_routes($this->routes)) ? $this->process() : Error::syntax('config.json');
 
     }
 
-    private function check()
+    private static function split(string $subject) : array
     {
 
-        return Utils::array_check([
-            Utils::preg('/^[a-z]+::[a-z]+$/i', $this->config),
-            Utils::preg('/^(\/|(\/([a-z0-9-_]+|{[a-z0-9-_]+}))+)(\/)?$/i', array_keys($this->config)),
-            Utils::preg('/^(GET|HEAD|POST|PUT|PATCH|DELETE)$/i', Utils::array_subkeys($this->config))
-        ]);
+        return preg_split('/\//i', $subject);
 
     }
 
-    private function execute()
+    private static function compare(array $subject, array $other) : bool
     {
 
-        list($this->class, $this->method) = explode('::', 'Test::static');
-        Utils::log($this->class);
-        Utils::log($this->method);
-        // Utils::log(method_exists("\\Wails\\Controllers\\{$this->class}", $this->method));
-        // $reflector = new ReflectionMethod("\\Wails\\Controllers\\{$this->class}", $this->method);
-        // Utils::log($reflector->isStatic());
-        // Utils::log($reflector->invoke(null));    
+        return Utils::preg('/^{[a-z0-9-_]+}$/i', array_diff_assoc($subject, $other))
+            && count($subject) == count($other);
+
+    }
+
+    private static function sanitize(string $subject) : string
+    {
+
+        return (Utils::preg('/^.+(\/$|\/\?.*$|\?.*$)/i', $subject)) ?
+            preg_replace('/(?!^)(\/$|\/\?.*$|\?.*$)/i', '', $subject) : $subject;
+
+    }
+
+    private static function invoke(string $class, string $method, array $params = [])
+    {
+
+        if (method_exists($class, $method)) {
+
+            $reflector = new ReflectionMethod($class, $method);
+            $reflector->invoke(($reflector->isStatic()) ? null : new $class(), ...$params);
+
+        } else {
+
+            Error::method($class, $method);
+            
+        };
+
+    }
+
+    private static function route(string $subject, array $routes) : string
+    {
+
+        $subjects = self::split($subject);
+
+        foreach (array_keys($routes) as $key) {
+
+            if (self::compare(self::split($key), $subjects)) return $key;
+
+        }
+
+        Error::status(404);
+
+    }
+
+    private static function params(string $subject, string $route) : array
+    {
+
+        return array_diff_assoc(self::split($subject), self::split($route));
+
+    }
+
+    private static function controller(string|array $subject, string $http) : array
+    {
+
+        return match (gettype($subject))
+        {
+            'string' => match ($http)
+            {
+                'GET' => preg_split('/::/i', $subject),
+                default => Error::http($subject, $http)
+            },
+            default => match (array_key_exists($http, $subject))
+            {
+                true => preg_split('/::/i', $subject[$http]),
+                default => Error::http($subject[$http], $http)
+            }
+        };
+
+    }
+
+    private function process()
+    {
+
+        $route = self::route($this->request['URI'], $this->routes);
+        $params = self::params($this->request['URI'], $route);
+        list($class, $method) = self::controller($this->routes[$route], $this->request['HTTP']);
+        self::invoke("\\Wails\\Controllers\\{$class}", $method, $params);
 
     }
 

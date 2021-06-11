@@ -2,13 +2,15 @@
 
 namespace Wails\Core;
 
-class Utils
+final class Utils
 {
 
     public static function log(mixed $arg, bool $dump = false)
     {
 
-        echo "<pre>"; ($dump) ? var_dump($arg) : print_r($arg); echo "</pre>";
+        echo "<pre>";
+        ($dump) ? var_dump($arg) : print_r($arg);
+        echo "</pre>";
 
     }
 
@@ -50,16 +52,18 @@ class Utils
 
         return match (gettype($subject)) {
             "string" => preg_match($pattern, $subject),
-            "array" => Utils::array_check(
-                array_map(function($e) use ($pattern) {
-                    return Utils::preg($pattern, $e);
-                }, $subject)
-            ),
-            "object" => Utils::array_check(
-                array_map(function($e) use ($pattern) {
-                    return Utils::preg($pattern, $e);
-                }, get_object_vars($subject))
-            )
+            "array", "object" => match (count($subject)) {
+                0 => true,
+                default => self::array_check(
+                    array_map(function($e) use ($pattern) {
+                        return self::preg($pattern, $e);
+                    }, match (gettype($subject)) {
+                        "array" => $subject,
+                        "object" => get_object_vars($subject)
+                    })    
+                )
+            },
+            default => false
         };
 
     }
