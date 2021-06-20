@@ -1,4 +1,4 @@
 <?
 
 require_once 'vendor/autoload.php';
-new Wails\Core\Routing();
+Wails\Core\App::boot();

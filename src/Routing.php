@@ -17,7 +17,8 @@ final class Routing
             'HTTP' => $_SERVER['REQUEST_METHOD'],
             'URI' => self::sanitize($_SERVER['REQUEST_URI'])
         );
-        (Config::is_routes($this->routes)) ? $this->process() : Error::syntax('config.json');
+        (Config::is_routes($this->routes)) ?
+            $this->process() : Error::syntax('config.json');
 
     }
 
@@ -43,20 +44,11 @@ final class Routing
             preg_replace('/(?!^)(\/$|\/\?.*$|\?.*$)/i', '', $subject) : $subject;
 
     }
-
-    private static function invoke(string $class, string $method, array $params = [])
+    
+    private static function params(string $subject, string $route) : array
     {
 
-        if (method_exists($class, $method)) {
-
-            $reflector = new ReflectionMethod($class, $method);
-            $reflector->invoke(($reflector->isStatic()) ? null : new $class(), ...$params);
-
-        } else {
-
-            Error::method($class, $method);
-            
-        };
+        return array_diff_assoc(self::split($subject), self::split($route));
 
     }
 
@@ -75,13 +67,6 @@ final class Routing
 
     }
 
-    private static function params(string $subject, string $route) : array
-    {
-
-        return array_diff_assoc(self::split($subject), self::split($route));
-
-    }
-
     private static function controller(string|array $subject, string $http) : array
     {
 
@@ -97,6 +82,22 @@ final class Routing
                 true => preg_split('/::/i', $subject[$http]),
                 default => Error::http($subject[$http], $http)
             }
+        };
+
+    }
+
+    private static function invoke(string $class, string $method, array $params = [])
+    {
+
+        if (method_exists($class, $method)) {
+
+            $reflector = new ReflectionMethod($class, $method);
+            $reflector->invoke(($reflector->isStatic()) ? null : new $class(), ...$params);
+
+        } else {
+
+            Error::method($class, $method);
+            
         };
 
     }

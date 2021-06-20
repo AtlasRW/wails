@@ -16,10 +16,14 @@
                 "src/config/",
                 "src/interfaces/"
             ],
-            "Wails\\Entities\\": "entities/",
+            "Wails\\Database\\": "database/",
             "Wails\\Models\\": "models/",
             "Wails\\Views\\": "views/",
             "Wails\\Controllers\\": "controllers/"
         }
+    },
+    "scripts": {
+        "db:create" : "\\Wails\\Core\\Scripts::db_create",
+        "db:seed" : "\\Wails\\Core\\Scripts::db_seed"
     }
 }
