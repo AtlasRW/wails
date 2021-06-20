@@ -9,6 +9,13 @@
         "POST": "Test::post",
         "PUT": "Test::put",
         "DELETE": "Test::delete"
+    },
+    "/tests/{item}":
+    {
+        "GET": "Test::get",
+        "POST": "Test::post",
+        "PUT": "Test::put",
+        "DELETE": "Test::delete"
     }
 
 }
