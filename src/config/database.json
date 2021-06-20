@@ -1,7 +1,7 @@
 {
 
     "driver": "mysql",
-    "name": "trellove",
+    "name": "ecommerce",
     "host": "172.17.0.1",
     "port": "33060",
     "user": "root",
