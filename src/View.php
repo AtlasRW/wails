@@ -5,29 +5,49 @@ namespace Wails\Core;
 final class View
 {
 
-    public static function render(string $view, array $params = [])
+    private static string $PAGE;
+    private static array $PARAMS;
+
+    public static function include(string $view, array $params = [])
     {
 
-        self::yield_list($params);
+        extract(array(
+            "ASSET" => "\\Wails\\Core\\Asset",
+            "SESSION" => "\\Wails\\Core\\Session",
+            "VIEW" => "\\Wails\\Core\\View"          
+        ));
 
-        Asset::view($view);
+        extract($params);
+
+        include Asset::view_path($view);
 
     }
 
-    public static function yield_list(array $yields)
+    public static function render(string $view, array $params = [], string $title = null)
     {
 
-        foreach ($yields as $key => $value)
-        {
-            self::yield($key, $value);
-        }
+        extract($params);
+
+        self::$PAGE = $view;
+        self::$PARAMS = $params;
+        self::include('layout', array("TITLE" => $title));
+
+        exit;
 
     }
 
-    public static function yield(string $key, mixed $value)
+    public static function yield()
     {
 
-        $$key = $value;
+        self::include(self::$PAGE, self::$PARAMS);
+
+    }
+
+    public static function redirect(string $url)
+    {
+        
+        header("Location: ${url}");
+        exit;
 
     }
 
