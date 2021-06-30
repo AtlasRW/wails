@@ -1,10 +1,10 @@
 {
 
-    "driver": "mysql",
-    "name": "ecommerce",
-    "host": "172.17.0.1",
-    "port": "33060",
-    "user": "root",
-    "pass": "root"
+    "driver": "DRIVER",
+    "name": "NAME",
+    "host": "HOST",
+    "port": "PORT",
+    "user": "USER",
+    "pass": "PASSWORD"
 
 }

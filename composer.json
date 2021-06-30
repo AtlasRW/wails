@@ -8,7 +8,11 @@
             "email": "atlasrw@icloud.com"
         }
     ],
-    "require": {},
+    "require": {
+        "firebase/php-jwt": "^5.4",
+        "league/oauth2-client": "^2.6",
+        "symfony/dotenv": "^5.3"
+    },
     "autoload": {
         "psr-4": {
             "Wails\\Core\\": [
@@ -23,7 +27,10 @@
         }
     },
     "scripts": {
-        "db:create" : "\\Wails\\Core\\Scripts::db_create",
-        "db:seed" : "\\Wails\\Core\\Scripts::db_seed"
+        "new:controller" : "\\Wails\\Core\\Script::new_controller",
+        "new:model" : "\\Wails\\Core\\Script::new_model",
+        "db:create" : "\\Wails\\Core\\Script::db_create",
+        "db:seed" : "\\Wails\\Core\\Script::db_seed",
+        "server:apache" : "a2enmod rewrite"
     }
 }

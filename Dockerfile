@@ -12,4 +12,5 @@ RUN rm -Rf ~/dotfiles
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 RUN docker-php-ext-install pdo_mysql
 RUN git clone https://github.com/AtlasRW/wails.git /var/www/html
+RUN a2enmod rewrite
 WORKDIR /var/www/html
